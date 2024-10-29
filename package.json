@@ -1,0 +1,32 @@
+{
+  "name": "ei-marketplace-einscricao-workers-dev",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240605.0",
+    "prisma": "^5.20.0",
+    "typescript": "^5.4.5",
+    "wrangler": "^3.80.1"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "start:dev": "npx wrangler dev --env stg",
+    "deploy": "wrangler deploy",
+    "deploy:dev": "npx wrangler deploy --env dev",
+    "export-db-stg": "npx wrangler d1 export database_name --remote --output=./database.sql --env stg",
+    "export-schema-db-stg": "npx wrangler d1 export database_name --remote --output=./schema.sql --no-data --env stg",
+    "export-data-db-stg": "npx wrangler d1 export database_name --remote --output=./schema.sql --no-schema --env stg",
+    "export-data-table-stg": "npx wrangler d1 export database_name --remote --table=events_themes --output=./events_themes.sql --no-schema",
+    "import-data-db-stg": "npx wrangler d1 execute database_name --remote --file=users_export.sql --env stg"
+  },
+  "dependencies": {
+    "@json2csv/plainjs": "^7.0.6",
+    "@prisma/adapter-d1": "^5.15.1",
+    "@prisma/client": "^5.20.0",
+    "better-sqlite3": "^11.0.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "hono": "^4.4.6",
+    "jose": "^5.9.3"
+  }
+}

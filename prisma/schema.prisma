@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Research {
+  id         Int      @id @default(autoincrement())
+  query      String?
+  filter     String?
+  latitude   Decimal?
+  longitude  Decimal?
+  city       String?
+  state      String?
+  created_at Int
+  updated_at Int
+  deleted_at Int?
+
+  @@index([id], name: "idx_research_id")
+  @@index([query], name: "idx_research_query")
+  @@index([city], name: "idx_research_city")
+  @@index([state], name: "idx_research_state")
+  @@map("researches")
+}
+
+model Category {
+  id            Int             @id @default(autoincrement())
+  title         String
+  created_at    Int
+  updated_at    Int
+  deleted_at    Int?
+  EventCategory EventCategory[]
+
+  @@index([id], name: "idx_categories_id")
+  @@index([title], name: "idx_categories_title")
+  @@map("categories")
+}
+
+model Theme {
+  id         Int          @id @default(autoincrement())
+  title      String
+  created_at Int
+  updated_at Int
+  deleted_at Int?
+  EventTheme EventTheme[]
+
+  @@index([id], name: "idx_themes_id")
+  @@index([title], name: "idx_themes_title")
+  @@map("themes")
+}
+
+model Modality {
+  id            Int             @id @default(autoincrement())
+  title         String
+  created_at    Int
+  updated_at    Int
+  deleted_at    Int?
+  EventModality EventModality[]
+
+  @@index([id], name: "idx_modalities_id")
+  @@index([title], name: "idx_modalities_title")
+  @@map("modalities")
+}
+
+model Event {
+  id                   Int             @id @default(autoincrement())
+  external_id          Int?
+  org_name             String?
+  is_active            Boolean?
+  title                String
+  description          String?
+  state                String
+  city                 String
+  local                String?
+  latitude             Decimal?
+  longitude            Decimal?
+  start_at             Int
+  end_at               Int
+  url_event            String
+  url_image            String
+  provider             String?
+  is_free              Boolean         @default(false)
+  amount_inscription   Int?            @default(0)
+  amount_view          Int?            @default(0)
+  created_at           Int
+  updated_at           Int
+  deleted_at           Int?
+  reason               String?
+  is_checked_christian Boolean?        @default(false)
+  is_checked_nsfw      Boolean?        @default(false)
+  is_checked_tags      Boolean?        @default(false)
+  is_pending           Boolean?        @default(false)
+  EventCategory        EventCategory[]
+  EventModality        EventModality[]
+  EventTheme           EventTheme[]
+
+  @@index([id], name: "idx_events_id")
+  @@index([title], name: "idx_events_title")
+  @@index([description], name: "idx_events_description")
+  @@index([state], name: "idx_events_state")
+  @@index([city], name: "idx_events_city")
+  @@index([start_at], name: "idx_events_start_at")
+  @@index([end_at], name: "idx_events_end_at")
+  @@index([latitude], name: "idx_events_latitude")
+  @@index([longitude], name: "idx_events_longitude")
+  @@map("events")
+}
+
+model EventCategory {
+  id Int @id @default(autoincrement())
+
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+  event_id Int
+  event    Event @relation(fields: [event_id], references: [id], onDelete: Cascade)
+
+  created_at Int
+  updated_at Int
+
+  @@index([category_id], name: "idx_events_category_id")
+  @@index([event_id], name: "idx_events_event_id")
+  @@map("events_categories")
+}
+
+model EventTheme {
+  id Int @id @default(autoincrement())
+
+  theme_id Int
+  theme    Theme @relation(fields: [theme_id], references: [id], onDelete: Cascade)
+
+  event_id Int
+  event    Event @relation(fields: [event_id], references: [id], onDelete: Cascade)
+
+  created_at Int
+  updated_at Int
+
+  @@index([theme_id], name: "idx_events_theme_id")
+  @@map("events_themes")
+}
+
+model EventModality {
+  id Int @id @default(autoincrement())
+
+  modality_id Int
+  modality    Modality @relation(fields: [modality_id], references: [id], onDelete: Cascade)
+
+  event_id Int
+  event    Event @relation(fields: [event_id], references: [id], onDelete: Cascade)
+
+  created_at Int
+  updated_at Int
+
+  @@index([modality_id], name: "idx_events_modality_id")
+  @@map("events_modalities")
+}
